@@ -108,7 +108,7 @@ router.get('/', asyncWrapper( async (req, res)=> {
             result = result.sort('createdAt')
         }
 
-    const productList = await result.populate('subCategory','category');
+    const productList = await result.populate('subCategory');
     if (!productList) {
         res.status(404).json({success:false})
     }
@@ -118,7 +118,7 @@ router.get('/', asyncWrapper( async (req, res)=> {
     
 router.get('/:id',asyncWrapper( async (req, res) => {
 
-            const product = await Product.findById(req.params.id).populate('subCategory','category');
+            const product = await Product.findById(req.params.id).populate('subCategory',);
     
         if (!product) {
             res.status(404).json({msg: 'The product with the given ID not exists' })
@@ -141,7 +141,7 @@ router.patch('/:id',asyncWrapper( async (req, res) =>{
         subCategory:req.body.subCategory,
         description: req.body.description,
         quantity: req.body.quantity,
-    }).populate('subCategory','category')
+    }).populate('subCategory')
     if(!product){
         return res.status(404).json({msg:'invalid product'}) 
     }

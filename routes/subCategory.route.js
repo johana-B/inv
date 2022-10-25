@@ -78,11 +78,19 @@ subCategoryRouter.patch('/:id',asyncWrapper( async (req, res) =>{
 
 subCategoryRouter.delete('/:id',asyncWrapper( async (req, res) =>{
     const {id:subCategoryID} = req.params
-    const subCategory = await SubCategory.findByIdAndDelete({_id:subCategoryID})
-    await Product.deleteMany({subCategory:subCategoryID})
+    const subCategory = await SubCategory.findById({_id:subCategoryID})
+    const products = await Product.find({subCategory:subCategoryID})
     if(!subCategory){
         return res.status(404).json({msg:'invalid product'})  
     }
+    products.forEach((product)=>{
+        const deleteImage = product.image
+        const imageToDelete = deleteImage.replace('http://localhost:3000/public/upload/',"");
+        fs.unlinkSync(`public/upload/${imageToDelete}`)
+    })
+    await Product.deleteMany({subCategory:subCategoryID})
+    await SubCategory.deleteOne({subCategory:subCategoryID})
+
     res.status(200).json({subCategory, msg:'subCategory is deleted successfully'}) 
 }))
 

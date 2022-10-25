@@ -1,4 +1,5 @@
 const express = require('express')
+const fs = require('fs')
 
 const categoryRouter = express.Router()
 
@@ -57,13 +58,21 @@ categoryRouter.patch('/:id',asyncWrapper( async (req, res) => {
 categoryRouter.delete('/:id',asyncWrapper( async (req, res) =>{
 
         const {id:categoryID} = req.params
-        const category = await Category.findOneAndDelete({_id:categoryID})
-        await SubCategory.deleteMany({category: categoryID})
-        await Product.deleteMany({category: categoryID})
+        const category = await Category.findById({_id:categoryID})
+        const products = await Product.find({category: categoryID})
         
         if(!category){
             return res.status(404).json({msg:`there is no category wit id:${category}`})
         }
+        products.forEach((product)=>{
+            const deleteImage = product.image
+            const imageToDelete = deleteImage.replace('http://localhost:3000/public/upload/',"");
+            fs.unlinkSync(`public/upload/${imageToDelete}`)
+        })
+        await Product.deleteMany({category:categoryID})
+        await SubCategory.deleteMany({category: categoryID})
+        await Category.deleteOne({category:categoryID})
+        
 
         res.status(201).json({category,msg: 'Category is deleted successfully'})
 

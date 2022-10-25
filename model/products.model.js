@@ -24,15 +24,10 @@ const productSchema = new mongoose.Schema({
         maxlength: [1000, 'Description can not be more than 1000 characters'],
         trim:true
     },
-    category: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'category',
-        required: true
-    },
       subCategory: {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'subCategory',
-          required: false
+          required: true
       },
     quantity: {
         type: Number,
