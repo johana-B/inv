@@ -51,7 +51,6 @@ router.post('/', upload.single('image'), asyncWrapper( async (req, res) => {
         image:`${basePath}${fileName}`, //"http://localhost:3000/public/upload/picture-1.jpg"
         createdAt:req.body.createdAt,
         description: req.body.description,
-        category:req.body.category,
         subCategory:req.body.subCategory,
         quantity: req.body.quantity,
     })
@@ -118,7 +117,7 @@ router.get('/', asyncWrapper( async (req, res)=> {
     
 router.get('/:id',asyncWrapper( async (req, res) => {
 
-            const product = await Product.findById(req.params.id).populate('subCategory',);
+            const product = await Product.findById(req.params.id).populate('subCategory');
     
         if (!product) {
             res.status(404).json({msg: 'The product with the given ID not exists' })
@@ -129,15 +128,14 @@ router.get('/:id',asyncWrapper( async (req, res) => {
 
 router.patch('/:id',asyncWrapper( async (req, res) =>{
 
-        const category = await Category.findById(req.body.category);
-    if (!Category){
-        return res.status(400).send('Invalid category')
+        const subCategory = await SubCategory.findById(req.body.subCategory);
+    if (!subCategory){
+        return res.status(400).send('Invalid subCategory')
     }
     const product = await Product.findOneAndUpdate(req.query.id, {
         name: req.body.name,
         price: req.body.price,
         createdAt:req.body.createdAt,
-        category:req.body.category,
         subCategory:req.body.subCategory,
         description: req.body.description,
         quantity: req.body.quantity,
