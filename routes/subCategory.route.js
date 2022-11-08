@@ -9,7 +9,6 @@ const Product = require('../model/products.model')
 
 const asyncWrapper = require('../middleware/asyncWrapper')
 
-
 subCategoryRouter.get('/',asyncWrapper( async (req, res) =>{
     const {name, sort,category} = req.query
      filter = {}
@@ -26,12 +25,11 @@ subCategoryRouter.get('/',asyncWrapper( async (req, res) =>{
         const sortList = sort.split(',').join(' ')
         result = result.sort(sortList)
     }
-
     const subCategorys = await result.populate('category')
     if (!subCategorys){
         return res.status(404).json({msg:'there is no subcategory with this id'})
     }
-    res.status(200).json({subCategorys})
+    res.status(200).json({subCategorys,nbHits: subCategorys.length})
 }))
 
 subCategoryRouter.get('/:id',asyncWrapper( async (req, res) => {
@@ -52,9 +50,7 @@ subCategoryRouter.post('/',asyncWrapper( async (req, res) =>{
         name: req.body.name,
         category:req.body.category
     })
-
     const subCategorys = await subCategory.save()
-
     if (!subCategorys)
         return res.status(500).send('subCategory cannot be created')
 
@@ -84,9 +80,12 @@ subCategoryRouter.delete('/:id',asyncWrapper( async (req, res) =>{
         return res.status(404).json({msg:'invalid product'})  
     }
     products.forEach((product)=>{
-        const deleteImage = product.image
-        const imageToDelete = deleteImage.replace('http://localhost:3000/public/upload/',"");
-        fs.unlinkSync(`public/upload/${imageToDelete}`)
+
+        const imageResponse = product.image
+        imageToDelete = imageResponse.replace('http://localhost:3000/public/upload/',"public/upload/");
+        if(fs.existsSync(imageToDelete)){
+            fs.unlinkSync(`${imageToDelete}`)
+        }
     })
     await Product.deleteMany({subCategory:subCategoryID})
     await SubCategory.deleteOne({subCategory:subCategoryID})
