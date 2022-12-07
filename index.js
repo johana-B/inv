@@ -29,7 +29,7 @@ app.use('/api/public/upload', express.static(path.join(__dirname, 'public', 'upl
 
 
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 6000
 
 const start = async () => {
     try {
