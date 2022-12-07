@@ -17,6 +17,9 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }))
 app.use(errorHandler)
 
 //route
+app.get('/', (req, res) => {
+    res.send('the inventory app');
+});
 app.use(expressFileUpload({ createParentPath: true }))
 app.use('/users', userRoute);
 app.use('/products', productRoute)
