@@ -17,15 +17,15 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }))
 app.use(errorHandler)
 
 //route
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
     res.send('the inventory app');
 });
 app.use(expressFileUpload({ createParentPath: true }))
-app.use('/users', userRoute);
-app.use('/products', productRoute)
-app.use('/category', categoryRoute)
-app.use('/subCategory', subCategoryRouter)
-app.use('/public/upload', express.static(path.join(__dirname, 'public', 'upload')))
+app.use('/api/users', userRoute);
+app.use('/api/products', productRoute)
+app.use('/api/category', categoryRoute)
+app.use('/api/subCategory', subCategoryRouter)
+app.use('/api/public/upload', express.static(path.join(__dirname, 'public', 'upload')))
 
 
 
