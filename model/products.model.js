@@ -1,54 +1,54 @@
 const mongoose = require('mongoose')
 
 const productSchema = new mongoose.Schema({
-    name:{
-        type:String,
-        //required:[true, 'product name must be provided'],
-        trim:true
+    name: {
+        type: String,
+        required: [true, 'product name must be provided'],
+        trim: true
     },
     subCategory: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'subCategory',
-       // required: true
+        required: true
     },
-    costPrice:{
-        type:Number, 
-       // required:[true, 'price must be provided']
+    costPrice: {
+        type: Number,
+        required: [true, 'price must be provided']
     },
-    sellingPrice:{
-        type:Number, 
-       // required:[true, 'price must be provided']
+    sellingPrice: {
+        type: Number,
+        required: [true, 'price must be provided']
     },
-    image:{
-        type:String,
-       // required:true
+    image: {
+        type: String,
+        required: true
     },
-    createdAt:{
-        type:Date, 
+    createdAt: {
+        type: Date,
         default: Date.now(),
     },
     description: {
         type: String,
-       // required: [true, 'Please provide product description'],
+        required: [true, 'Please provide product description'],
         maxlength: [1000, 'Description can not be more than 1000 characters'],
-        trim:true
+        trim: true
     },
     quantity: {
         type: Number,
-       // required: true,
+        // required: true,
         min: 0,
-    },  
-    modelNumber:{
-        type:Number, 
-      //  required:[true, 'price must be provided']
-    },   
-    vendor:{
-        type:String, 
-       // required:[true, 'price must be provided']
     },
-    sold:{
-        type:Number,
-        default:0
+    modelNumber: {
+        type: Number,
+        required: [true, 'price must be provided']
+    },
+    vendor: {
+        type: String,
+        required: [true, 'price must be provided']
+    },
+    sold: {
+        type: Number,
+        default: 0
     }
 })
 
@@ -57,7 +57,7 @@ productSchema.virtual('id').get(function () {
 })
 
 productSchema.set('toJSON', {
-    virtuals:true,
+    virtuals: true,
 })
 
 
