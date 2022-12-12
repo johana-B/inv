@@ -1,7 +1,7 @@
 const express = require('express')
 
 const subCategoryRouter = express.Router()
-
+const { FirebaseAuthentication } = require('../middleware/authentication');
 const {
     createSubCategory,
     getAllSubCategories,
@@ -14,13 +14,13 @@ const {
 
 subCategoryRouter
     .route('/')
-    .get(getAllSubCategories)
-    .post(createSubCategory);
+    .get(FirebaseAuthentication, getAllSubCategories)
+    .post(FirebaseAuthentication, createSubCategory);
 
 subCategoryRouter
     .route('/:id')
-    .get(getSingleSubCategory)
-    .patch(updateSubCAtegory)
-    .delete(deleteSubCategory);
+    .get(FirebaseAuthentication, getSingleSubCategory)
+    .patch(FirebaseAuthentication, updateSubCAtegory)
+    .delete(FirebaseAuthentication, deleteSubCategory);
 
 module.exports = subCategoryRouter

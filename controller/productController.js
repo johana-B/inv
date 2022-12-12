@@ -232,3 +232,7 @@ module.exports = {
     deleteProduct,
     soldProducts
 }
+
+
+//multer gridfs-stream
+//multer-gridfs-storage

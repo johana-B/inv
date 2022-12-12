@@ -1,7 +1,7 @@
 const express = require('express')
 
 const categoryRouter = express.Router()
-
+const { FirebaseAuthentication } = require('../middleware/authentication');
 const {
     createCategory,
     getAllCategory,
@@ -12,8 +12,8 @@ const {
 
 categoryRouter
     .route('/')
-    .get(getAllCategory)
-    .post(createCategory)
+    .get(FirebaseAuthentication, getAllCategory)
+    .post(FirebaseAuthentication, createCategory)
 
 categoryRouter
     .route('/:id')

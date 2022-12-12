@@ -1,53 +1,53 @@
+const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
-const { isTokenValid } = require('../utils');
 
-const authenticateUser = async (req, res, next) => {
-    const token = req.headers.authorization
-    if (!token) {
-        throw new CustomError.unauthenticatedError('authentication invalid')
-    }
+const admin = require('firebase-admin/app');
+let firebaseApp = null;
+const { getAuth } = require('firebase-admin/auth')
+const serviceAccount = require("../inventory-app-643e4-firebase-adminsdk-ziktr-8eb5238c3e.json");
+
+const FirebaseAuthentication = async (req, res, next) => {
     try {
-        const { firstName, userId, } = isTokenValid({ token });
-        req.user = { firstName, userId, };
-        next();
-    } catch (error) {
-        throw new CustomError.unauthenticatedError('authentication invalid')
+        firebaseApp = admin.initializeApp({
+            credential: admin.cert(serviceAccount)
+        });
     }
-
+    catch (err) {
+        firebaseApp = admin.getApp()
+    }
+    const idToken = req.headers['authorization'] ? req.headers['authorization'].split(' ') : null;
+    if (!idToken) {
+        throw new CustomError.BadRequestError('invalid credential');
+    }
+    else if (!idToken[1]) {
+        throw new CustomError.BadRequestError('invalid credential');
+    }
+    else {
+        getAuth()
+            .FirebaseAuthentication(idToken[1])
+            .then((decodedToken) => {
+                const uid = decodedToken.uid;
+                console.log(uid);
+                next();
+            })
+            .catch((error) => {
+                throw new CustomError.BadRequestError('id token is invalid')
+            });
+    }
 }
 
-//authentication middleware firebase authentication in nodejs and mongodb?
-// const {auth} = require('firebase-admin');
-// const authService = auth();
+const autorizedUser = (...roles) => {
+    return (req, res, next) => {
+        if (!roles.includes(req.user.role)) {
+            throw new CustomError.unauthenticatedError(
+                'Unauthorized to access this route'
+            );
+        }
+        next();
+    };
+};
 
-// exports.requiresAuth = async (req, res, next) => {
-//     const idToken = req.header('FIREBASE_AUTH_TOKEN');
-
-//     // https://firebase.google.com/docs/reference/admin/node/admin.auth.DecodedIdToken
-//     let decodedIdToken;
-
-//     try {
-//         decodedIdToken = await authService.verifyIdToken(idToken);
-//     } catch (error) {
-//         next(error);
-//         return;
-//     }
-
-//     req.user = decodedIdToken;
-//     next();
-// }
-
-
-// const express = require('express');
-// const router = express.Router();
-// const {requiresLogin} = require('./my-middleware.js');
-
-// router.get('/example', requiresLogin, async (req, res) => {
-//     console.log(req.user)
-// })
-
-
-
-
-
-module.exports = authenticateUser;
+module.exports = {
+    FirebaseAuthentication,
+    autorizedUser
+}

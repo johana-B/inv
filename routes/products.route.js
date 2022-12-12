@@ -2,7 +2,7 @@ const express = require('express')
 
 const router = express.Router()
 
-//const { authenticateUser } = require('../middleware/authentication');
+const { FirebaseAuthentication, autorizedUser } = require('../middleware/authentication');
 
 const {
     getAllProducts,
@@ -28,19 +28,19 @@ router
 
 router
     .route('/totalProfit')
-    .get(getTotalProfit)
+    .get([FirebaseAuthentication, autorizedUser('admin')], getTotalProfit)
 
 router
     .route('/soldProduct')
-    .get(getSoldProduct)
+    .get([FirebaseAuthentication, autorizedUser('admin')], getSoldProduct)
 
 router
     .route('/soldprice')
-    .get(getSoldPrice)
+    .get([FirebaseAuthentication, autorizedUser('admin')], getSoldPrice)
 
 router
     .route('/totalStock')
-    .get(getTotalStock)
+    .get([FirebaseAuthentication, autorizedUser('admin')], getTotalStock)
 
 router
     .route('/soldPro/:id')
