@@ -24,7 +24,7 @@ const FirebaseAuthentication = async (req, res, next) => {
     }
     else {
         getAuth()
-            .FirebaseAuthentication(idToken[1])
+            .verifyIdToken(idToken[1])
             .then((decodedToken) => {
                 const uid = decodedToken.uid;
                 console.log(uid);
